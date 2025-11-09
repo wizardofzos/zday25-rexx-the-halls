@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>REXX the Halls – Festive Coding with Mainframe Languages</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/black.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/monokai.css">
+<style>
+/* ---------- Mainframe Society branding ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+:root{
+  --r-background-color:#0a0a1a;
+  --r-heading-color:#a2191a;
+  --r-heading-font:'Montserrat','Inter','Nunito',Helvetica,Arial,sans-serif;
+  --r-main-color:#e8e8e8;
+  --r-link-color:#5a9fd4;
+  --r-link-color-hover:#7bb3e0;
+  --r-code-font:'Fira Code','Cascadia Code',monospace;
+}
+/* Winter night sky gradient background */
+.reveal {
+  background-image: radial-gradient(ellipse at top, #1a1a3a 0%, #0a0a1a 50%, #000000 100%);
+}
+.reveal h1,.reveal h2,.reveal h3{
+  text-transform:none;
+  font-weight:700;
+  color:#ffffff;
+  background-color:var(--r-heading-color);
+  padding:0.2em 0.6em;
+  display:inline-block;
+  border-radius:3px;
+}
+/* Inline code styling */
+.reveal :not(pre) > code{background:#0a0a0a;color:#e8e8e8;padding:4px 8px;border-radius:4px}
+/* Code block styling - let highlight.js handle colors */
+.reveal pre{border-radius:4px;box-shadow:0 4px 8px rgba(0,0,0,0.3)}
+.reveal pre code{padding:1rem 1.5rem;font-size:1.2em;border-radius:4px}
+.reveal .footer{font-size:.9rem;opacity:.7;margin-top:2rem;color:#999}
+#snowCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+#debugCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9997;opacity:0.3;display:none}
+.reveal .slides{transition:opacity 0.4s ease-in-out}
+.ms-logo{max-width:300px;margin-bottom:2rem}
+.reveal .ms-logo-persistent{position:fixed!important;bottom:12px!important;left:20px!important;width:50px!important;height:auto!important;opacity:0.7;z-index:9998!important}
+.reveal a{color:var(--r-link-color)}
+.reveal a:hover{color:var(--r-link-color-hover)}
+.bottom-bar{position:fixed;bottom:0;left:0;width:100%;height:75px;background-color:#242424;z-index:9997;display:flex;align-items:center;justify-content:center;border-top:1px solid #333}
+.bottom-bar-text{font-size:0.65rem;color:#666;text-align:center;line-height:1.3;padding:0 80px}
+.reveal pre.small-code code { font-size: 0.8em; }
+
+/* Bokeh light effect canvas */
+#bokehCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- Slide 1  Title -->
+<section>
+  <img src="https://d1c2gz5q23tkk0.cloudfront.net/shrine_store/uploads/networks/2987/networks/2987/large-a55dab5b37b8cea8477f2703769575d8.webp" alt="Mainframe Society" class="ms-logo">
+  <h1>REXX the Halls</h1>
+  <p>Festive Coding with Mainframe Languages</p>
+  <p class="fragment">Holiday spirit & Mainframe Coding fun 👨🏻‍💻</p>
+  <p class="footer">Henri Kuiper, CTO @ Mainframe Society<br>Part of IBM ZDay 2025</p>
+</section>
+
+<!-- Intro WhoAmI? -->
+<section>
+  <h2>Who Am I?</h2>
+  <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: center; margin-top: 1rem;">
+    <div>
+      <img src="henri.jpg" alt="Henri Kuiper" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+    </div>
+    <div style="text-align: left;">
+      <ul>
+        <li class="fragment">Henri Kuiper</li>
+        <li class="fragment">CTO @ Mainframe Society</li>
+        <li class="fragment">7 Year IBM Champion</li>
+        <li class="fragment">Mainframe Nerd</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 2  Whats AoC -->
+<section>
+  <h2>What's Advent of Code?</h2>
+  <p class="fragment">A global holiday coding tradition made by <a href="https://was.tl/">Eric Wastl</a></p>
+  <ul>
+    <li class="fragment">25 days of logic puzzles released every December</li>
+    <li class="fragment">Solve using any programming language</li>
+    <li class="fragment">Developers worldwide compete, learn, and share</li>
+    <li class="fragment">Fun, festive, and surprisingly addictive!</li>
+    <li class="fragment">Running for 10 years straight!</li>
+    <li class="fragment">All info: <a href='https://adventofcode.com'>adventofcode.com</a></li>
+  </ul>
+</section>
+
+<!-- Slide 12  Sample Challenge -->
+<section>
+  <h2>First ever challenge<br />2015 day one part one</h2>
+  <pre class="fragment"><code class="language-plaintext">Santa is trying to deliver presents in a large
+apartment building. He starts on the ground
+floor (0) and then follows the instructions one
+character at a time.
+
+( ==> go up one floor
+) ==> go down one floor
+
+The apartment building is very tall,
+Santa will never find the top or bottom floors.
+
+For example:  ((( results in floor 3
+
+To what floor do the instructions take Santa?</code></pre>
+</section>
+
+<!-- Slide 13  Code Example 1 -->
+<section>
+  <h2>Python Solution</h2>
+  <pre><code class="language-python">instruction_set = "((((()(..."
+floor = 0
+for instruction in instruction_set:
+    if instruction == "(":
+        floor = floor +1
+    elif instruction == ")":
+        floor = floor -1
+print("Santa is at floor: {}".format(floor))</code></pre>
+</section>
+
+<!-- Slide 3  Mainframe Twist -->
+<section>
+  <h2>The Mainframe Twist</h2>
+  <p class="fragment">What if we solved them… on z/OS?</p>
+  <ul>
+    <li class="fragment">Introducing Advent of Code for Mainframers (MFAOC)</li>
+    <li class="fragment">Solve the challenges in z/OS languages like REXX, COBOL, PL/I, or JCL</li>
+    <li class="fragment">Learn a new language, or polish up your skills</a></li>
+    <li class="fragment">Friendly competition, fame and swag</li>
+    <li class="fragment">This will be our 10th year </li>
+
+  </ul>
+</section>
+
+<!-- Slide 14  Code Example 2 -->
+<section>
+  <h2>REXX Solution</h2>
+  <pre><code class="language-rexx">/* REXX */
+INST = "((((()(..."
+floor = 0
+do i = 1 to length(INST)
+  inst = substr(INST,i,1)
+  if inst = "(" then floor = floor + 1
+  if inst = ")" then floor = floor - 1
+end
+say "Santa is at floor" floor</code></pre>
+<br /><br />
+</section>
+
+<!-- Slide 15  Code Example 3 -->
+<section>
+  <h2>PL/1 Solution</h2>
+  <pre><code class="language-pli">SANTAFLOOR: PROC OPTIONS(MAIN);
+  DCL instructions CHAR(100) INIT('((((()(...');
+  DCL i FIXED BIN(31);
+  DCL floor FIXED BIN(31) INIT(0);
+  DCL c CHAR(1);
+  DO i = 1 TO LENGTH(instructions);
+      c = SUBSTR(instructions, i, 1);
+      IF c = '(' THEN
+        floor = floor + 1;
+      ELSE IF c = ')' THEN
+        floor = floor - 1;
+  END;
+  PUT SKIP LIST('Santa is at floor:', floor);
+ END SANTAFLOOR;</code></pre>
+</section>
+
+<!-- Slide 16  Code Example 4 -->
+<section>
+  <h2>COBOL Solution</h2>
+  <pre class="small-code"><code class="language-cobol">IDENTIFICATION DIVISION.
+PROGRAM-ID. SANTAFLOOR.
+
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+01 INSTRUCTION-SET      PIC X(100) VALUE "((((()(...".
+01 I                    PIC 9(3) VALUE 1.
+01 LEN                  PIC 9(3).
+01 CHAR                 PIC X.
+01 FLOOR                PIC S9(5) VALUE 0.
+
+PROCEDURE DIVISION.
+    COMPUTE LEN = FUNCTION LENGTH(INSTRUCTION-SET)
+
+    PERFORM VARYING I FROM 1 BY 1 UNTIL I > LEN
+        MOVE INSTRUCTION-SET(I:1) TO CHAR
+        EVALUATE CHAR
+            WHEN "("
+                ADD 1 TO FLOOR
+            WHEN ")"
+                SUBTRACT 1 FROM FLOOR
+        END-EVALUATE
+    END-PERFORM
+
+    DISPLAY "Santa is at floor: " FLOOR
+    STOP RUN.</code></pre>
+</section>
+
+<!-- Slide 16  Code Example 4 -->
+<section>
+  <h2>HLASM Solution</h2>
+  <pre class="small-code"><code class="language-hlasm">SANTAFLR CSECT
+    USING  SANTAFLR,R15         Establish base register
+    STM    R14,R12,12(R13)      Save caller registers
+    LR     R12,R15              Set up base
+    LA     R11,SAVEAREA         Get save area
+    ST     R13,4(R11)           Chain back
+    ST     R11,8(R13)
+    LR     R13,R11
+
+***********************************************************************
+*  WORKING STORAGE
+***********************************************************************
+INSTRSET DC    C'((((()(...'         Instruction string
+INSTRLEN DC    F'11'                 Length of the string
+FLOOR    DC    F'0'                  Current floor counter
+I        DC    F'1'                  Loop index
+CHAR     DS    CL1                   Current character
+MSG      DC    C'Santa is at floor: ' 
+
+***********************************************************************
+*  MAIN LOGIC
+***********************************************************************
+MAINLOOP DS    0H
+    L      R1,I                 Load loop index
+    C      R1,INSTRLEN          Compare to length
+    BH     DONE                 If higher, we’re done
+
+    LA     R2,INSTRSET          Load address of string
+    AR     R2,R1                Add index
+    SR     R2,=F'1'             Adjust for 0-based
+    MVC    CHAR(1),0(R2)        Get character
+
+    CLI    CHAR,'('
+    BE     UP
+    CLI    CHAR,')'
+    BE     DW
+    B      NX
+
+UP  L      R3,FLOOR
+    LA     R3,1(R3)
+    ST     R3,FLOOR
+    B      NEXT
+
+DW  L      R3,FLOOR
+    LA     R3,-1(R3)
+    ST     R3,FLOOR
+
+NX  LA     R1,1(R1)
+    ST     R1,I
+    B      MAINLOOP
+
+***********************************************************************
+*  PRINT RESULT
+***********************************************************************
+DONE     WTO    'Santa is at floor:'         Print message
+         MVC    BUF(4),FLOOR                 Move floor value to buffer
+
+
+***********************************************************************
+*  CLEANUP AND RETURN
+***********************************************************************
+    L      R13,4(R13)
+    LM     R14,R12,12(R13)
+    BR     R14
+
+SAVEAREA DS    18F
+BUF      DS    CL10
+         END   SANTAFLR
+</code></pre>
+</section>
+
+
+<!-- Slide 4  Screenshot 1 -->
+<section>
+  <h2>How to join?</h2>
+  <p>Go to <a href="https://mfaoc.mainframe.community">mfaoc.mainframe.community</a></h4>
+  <img src="aocmain.png" alt="MFAOC Screenshot 1" style="max-width: 80%; margin-top: 1rem; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+</section>
+
+<!-- Slide 5  Screenshot 2 -->
+<section>
+  <h2>Leaderboard</h2>
+  <img src="aocleader.png" alt="MFAOC Screenshot 2" style="max-width: 80%; margin-top: 1rem; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+</section>
+
+<!-- Slide 6  Screenshot 3 -->
+<section>
+  <h2>Chat about solutions</h2>
+  <img src="aocchat.png" alt="MFAOC Screenshot 3" style="max-width: 80%; margin-top: 1rem; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+</section>
+
+<!-- Slide 6  Screenshot 3 -->
+<section>
+  <h2>Swag & Prices?</h2>
+  <p class="fragment">Many organisations sponsor this event.</p>
+  <ul>
+    <li class="fragment">Win a Mainframe Society 'seeva'-pluche toy</li>
+    <li class="fragment">An Interskill learning seat</li>
+    <li class="fragment">See them all on the <a href="https://mfaoc.mainframe.community/sponsors/public">sponsor overview page</a></li>
+    <li class="fragment">...you can still sponsor this epic event!</li>
+  </ul>
+</section>
+
+<!-- Slide 11  Companies -->
+<section>
+  <h2>How Can YOU help?</h2>
+  <p class="fragment">Help us code, celebrate, and spread the cheer</p>
+  <ul>
+    <li class="fragment">Promote this event in your organisation and beyond</li>
+    <li class="fragment">Celebrate our coders on social media</li>
+    <li class="fragment">Want to sponsor prizes or swag 🎁 ?</li>
+    <li class="fragment">Go to the <a href='https://mfaoc.mainframe.community/sponsors'>sponsor page</a></li>
+    <li class="fragment">Or contact me: <a href='mailto:henri@mainframesociety.com'>henri@mainframesociety.com</a></li>
+  </ul>
+</section>
+
+<!-- Slide 8  Rosetta Stone -->
+<section>
+  <h2>The 'Rosetta Stone' Effect</h2>
+  <p class="fragment">One puzzle. Many languages. Infinite insights.</p>
+  <ul>
+    <li class="fragment">Solve the same challenge in multiple languages</li>
+    <li class="fragment">Understand each language's strengths and quirks</li>
+    <li class="fragment">Discover how COBOL thinks vs. REXX vs. JCL</li>
+    <li class="fragment">Deep learning through comparison</li>
+  </ul>
+</section>
+
+<!-- Slide 9  Why Mainframers Love It -->
+<section>
+  <h2>Why We Love It</h2>
+  <p class="fragment">It's learning, teamwork, and competition</p>
+  <ul>
+    <li class="fragment">Build your coding confidence through play</li>
+    <li class="fragment">Collaborate across roles and generations</li>
+    <li class="fragment">Compare solutions, share tricks, and celebrate creativity</li>
+    <li class="fragment">Every day is a small win 🎄</li>
+  </ul>
+</section>
+
+
+
+
+<!-- Slide 17  Live Streams -->
+<section>
+  <h2>Spread the joy!!</h2>
+  <p class="fragment">Show 'the world' the Mainframe community can play this global game too!</p>
+  <ul>
+    <li class="fragment">We're planning live/recorded streams with universities</li>
+    <li class="fragment">Your invited to do the same!</li>
+    <li class="fragment">See one of <a href="https://www.youtube.com/watch?v=85D1BJ2clcU&list=PLUPUckq3dLkaHxlJ_lXe6vGNKrCLexf3C&index=1">last years</a> videos where we coded with Fanny and Malin from Semstecy</li>
+    <li class="fragment">Watch out for <a href="https://www.youtube.com/@TheMainframeSociety>">this years videos</a> on the MS YouTube</li>
+  </ul>
+</section>
+
+<!-- Slide 18  CTA -->
+<section>
+  <h2>Join the Festivities 🎄</h2>
+  <p class="fragment">Sign up today at: <a href="https://mfaoc.mainframe.community">mfaoc.mainframe.community</a></p>
+  <ul>
+    <li class="fragment">Participate in the December coding fun</li>
+    <li class="fragment">Share your progress online with:<br><code>#MFAOC #AdventOfCode #REXXTheHalls</code></li>
+    <li class="fragment">Tag <code>@Mmainframe Society</code> in your LinkedIN posts</li>
+    <li class="fragment">Bring your friends, your team, and your coding skills!</li>
+  </ul>
+</section>
+
+<!-- Slide 19  Thank You -->
+<section>
+  <h2>May your loops be merry and your output clean!</h2>
+  <p class="fragment">Henri Kuiper — Mainframe Society</p>
+  <p class="fragment">💻 <a href="https://mfaoc.mainframe.community">mfaoc.mainframe.community</a><br>
+  <a href='https://www.linkedin.com/in/wizardofzos/'>https://www.linkedin.com/in/wizardofzos</a><br>
+  <a href='mailto:henri@mainframesociety.com'>henri@mainframesociety.com</a><br>
+  <code>#REXXTheHalls #MFAOC</code></p>
+</section>
+
+<!-- Slide 20  Final Thank You -->
+<section>
+  <h1>THANK YOU!</h1>
+  <h2>Q&A Time</h2>
+  <p style="margin-top: 2rem; font-size: 1.5em;">🎄</p>
+</section>
+
+</div>
+<img src="https://d1c2gz5q23tkk0.cloudfront.net/shrine_store/uploads/networks/2987/networks/2987/large-a55dab5b37b8cea8477f2703769575d8.webp" alt="Mainframe Society" class="ms-logo-persistent">
+</div>
+
+<!-- Bottom bar with attribution -->
+<div class="bottom-bar">
+  <div class="bottom-bar-text">
+    Henri Kuiper, 2025.<br>
+    Demo and materials presented at IBM Z Day 2025 – shared for illustration only. All underlying intellectual property remains the property of the author.
+  </div>
+</div>
+
+<!-- Christmas decorations -->
+<canvas id="bokehCanvas"></canvas>
+<canvas id="snowCanvas"></canvas>
+<canvas id="debugCanvas"></canvas>
+
+<script>
+// Bokeh Light Effect
+(function() {
+  const canvas = document.getElementById('bokehCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const lights = [];
+  const numLights = 25; // Number of bokeh lights
+
+  // Warm festive colors (reds, golds, warm whites)
+  const colors = [
+    'rgba(255, 200, 100, 0.4)',  // Warm gold
+    'rgba(255, 150, 100, 0.3)',  // Orange-gold
+    'rgba(200, 100, 150, 0.3)',  // Warm pink
+    'rgba(255, 220, 200, 0.35)', // Warm white
+    'rgba(180, 120, 200, 0.3)',  // Soft purple
+  ];
+
+  class BokehLight {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.radius = Math.random() * 80 + 40; // 40-120px radius
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.dx = (Math.random() - 0.5) * 0.3; // Slow horizontal drift
+      this.dy = (Math.random() - 0.5) * 0.3; // Slow vertical drift
+      this.pulseSpeed = Math.random() * 0.02 + 0.01;
+      this.pulsePhase = Math.random() * Math.PI * 2;
+    }
+
+    update() {
+      this.x += this.dx;
+      this.y += this.dy;
+
+      // Wrap around edges
+      if (this.x < -this.radius) this.x = canvas.width + this.radius;
+      if (this.x > canvas.width + this.radius) this.x = -this.radius;
+      if (this.y < -this.radius) this.y = canvas.height + this.radius;
+      if (this.y > canvas.height + this.radius) this.y = -this.radius;
+
+      this.pulsePhase += this.pulseSpeed;
+    }
+
+    draw() {
+      const pulse = Math.sin(this.pulsePhase) * 0.3 + 0.7; // 0.4 to 1.0
+      const currentRadius = this.radius * pulse;
+
+      // Create radial gradient for bokeh effect
+      const gradient = ctx.createRadialGradient(
+        this.x, this.y, 0,
+        this.x, this.y, currentRadius
+      );
+
+      gradient.addColorStop(0, this.color.replace(/[\d.]+\)$/, '0.5)'));
+      gradient.addColorStop(0.5, this.color);
+      gradient.addColorStop(1, this.color.replace(/[\d.]+\)$/, '0)'));
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, currentRadius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Create lights
+  for (let i = 0; i < numLights; i++) {
+    lights.push(new BokehLight());
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    lights.forEach(light => {
+      light.update();
+      light.draw();
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+<!-- Load highlight.js CORE library first so hljs is globally available -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+<script>
+// Initialize Reveal.js first
+Reveal.initialize({
+  hash:true,
+  transition:'slide',
+  transitionSpeed:'slow',
+  backgroundTransition:'slide',
+  plugins:[RevealHighlight]
+});
+
+// Random transitions on slide change
+Reveal.on('slidechanged', function() {
+  const transitions = ['slide', 'convex', 'concave', 'zoom'];
+  const randomTransition = transitions[Math.floor(Math.random() * transitions.length)];
+  Reveal.configure({ transition: randomTransition });
+});
+
+// AFTER Reveal initializes, register languages and re-highlight
+Reveal.on('ready', function() {
+  console.log('Reveal ready, registering languages...');
+
+  // COBOL language definition
+  hljs.registerLanguage('cobol', function(hljs) {
+    return {
+      name: "COBOL",
+      aliases: ["standard-cobol","cobol"],
+      case_insensitive: true,
+      keywords: {
+        $pattern: /[a-zA-Z]+(?:-[a-zA-Z0-9]+)*/,
+        keyword: ["ACCEPT","ACCESS","ADD","CALL","COMPUTE","CONTINUE","DISPLAY","DIVIDE","ELSE","END","END-IF","END-PERFORM","EVALUATE","EXIT","IF","MOVE","MULTIPLY","PERFORM","PIC","PICTURE","PROCEDURE","PROGRAM-ID","READ","RETURN","SECTION","SELECT","STOP","SUBTRACT","THEN","UNTIL","VARYING","WHEN","WORKING-STORAGE"],
+        literal: ["ZERO","ZEROES","ZEROS","SPACE","SPACES","HIGH-VALUE","HIGH-VALUES","LOW-VALUE","LOW-VALUES"]
+      },
+      contains: [
+        hljs.COMMENT(/\*/, /$/),
+        {
+          scope: 'string',
+          begin: '"', end: '"'
+        },
+        {
+          scope: 'string',
+          begin: "'", end: "'"
+        },
+        {
+          scope: 'number',
+          begin: /\b\d+\b/
+        }
+      ]
+    };
+  });
+
+  // REXX language definition
+  hljs.registerLanguage('rexx', function(hljs) {
+    return {
+      name: 'REXX',
+      aliases: ['rexx'],
+      case_insensitive: true,
+      keywords: {
+        keyword: ['Address', 'Arg', 'Call', 'Do', 'End', 'Drop', 'Exit', 'If', 'Then', 'Else', 'Interpret', 'Iterate', 'Leave', 'Nop', 'Numeric', 'Options', 'Parse', 'Procedure', 'Pull', 'Push', 'Queue', 'Return', 'Say', 'Select', 'Signal', 'Trace', 'Upper'],
+        built_in: ['substr', 'length', 'word', 'words', 'pos']
+      },
+      contains: [
+        hljs.COMMENT(/\/\*/, /\*\//),
+        {
+          scope: 'string',
+          begin: '"', end: '"'
+        },
+        {
+          scope: 'string',
+          begin: "'", end: "'"
+        },
+        {
+          scope: 'number',
+          begin: /\b\d+\b/
+        }
+      ]
+    };
+  });
+
+  // PL/I language definition
+  hljs.registerLanguage('pli', function(hljs) {
+    return {
+      name: 'PL/I',
+      aliases: ['pli', 'pl1', 'pl/i'],
+      case_insensitive: true,
+      keywords: {
+        keyword: ['DECLARE', 'DCL', 'PROCEDURE', 'PROC', 'END', 'IF', 'THEN', 'ELSE', 'DO', 'WHILE', 'UNTIL', 'RETURN', 'CALL', 'SELECT', 'WHEN', 'OTHERWISE', 'BEGIN', 'LEAVE', 'ITERATE', 'GO', 'GOTO', 'ENTRY', 'ON', 'SIGNAL', 'REVERT', 'BY', 'TO', 'REPEAT'],
+        type: ['FIXED', 'FLOAT', 'BIN', 'BINARY', 'DEC', 'DECIMAL', 'CHAR', 'CHARACTER', 'BIT', 'VARYING', 'VAR', 'STATIC', 'AUTOMATIC', 'CONTROLLED', 'BASED', 'DEFINED', 'ALIGNED', 'UNALIGNED', 'SIGNED', 'UNSIGNED'],
+        built_in: ['PUT', 'GET', 'READ', 'WRITE', 'OPEN', 'CLOSE', 'SUBSTR', 'LENGTH', 'INDEX', 'VERIFY', 'TRANSLATE', 'TRIM', 'ALLOCATION', 'STRING', 'UNSPEC'],
+        literal: ['NULL', 'TRUE', 'FALSE']
+      },
+      contains: [
+        hljs.COMMENT(/\/\*/, /\*\//),
+        {
+          scope: 'string',
+          begin: "'", end: "'"
+        },
+        {
+          scope: 'string',
+          begin: '"', end: '"'
+        },
+        {
+          scope: 'number',
+          begin: /\b\d+(\.\d+)?(E[+-]?\d+)?\b/i
+        }
+      ]
+    };
+  });
+
+  // HLASM language definition
+  hljs.registerLanguage('hlasm', function(hljs) {
+    return {
+      name: 'HLASM',
+      aliases: ['hlasm', 'asm370', 'assembler'],
+      case_insensitive: true,
+      keywords: {
+        keyword: ['L', 'LA', 'LR', 'LH', 'LM', 'ST', 'STH', 'STM', 'MVC', 'MVI', 'MVZ', 'MVN', 'CLC', 'CLI', 'CLR', 'B', 'BR', 'BRC', 'BRAS', 'BASR', 'BAL', 'BALR', 'BCR', 'BC', 'A', 'S', 'M', 'D', 'AR', 'SR', 'MR', 'DR', 'AH', 'SH', 'MH', 'CH', 'CR', 'C', 'N', 'O', 'X', 'NR', 'OR', 'XR', 'SLL', 'SRL', 'SLA', 'SRA', 'SLDL', 'SRDL'],
+        built_in: ['CSECT', 'DSECT', 'DC', 'DS', 'EQU', 'USING', 'DROP', 'END', 'MACRO', 'MEND', 'MEXIT', 'COPY', 'TITLE', 'PRINT', 'EJECT', 'SPACE', 'ORG', 'LTORG', 'ENTRY', 'EXTRN', 'WXTRN', 'COM', 'START'],
+        literal: ['R0', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15']
+      },
+      contains: [
+        // Comment line starting with *
+        {
+          scope: 'comment',
+          begin: /^\*/,
+          end: /$/
+        },
+        // Strings
+        {
+          scope: 'string',
+          begin: "'", end: "'"
+        },
+        {
+          scope: 'string',
+          begin: '"', end: '"'
+        },
+        // Numbers (decimal and hex)
+        {
+          scope: 'number',
+          begin: /\b\d+\b/
+        },
+        {
+          scope: 'number',
+          begin: /X'[0-9A-F]+'/i
+        },
+        // Labels (start of line, up to 8 chars)
+        {
+          scope: 'title',
+          begin: /^[A-Z@#$][A-Z0-9@#$]{0,7}/i
+        }
+      ]
+    };
+  });
+
+  console.log('Languages registered. Re-highlighting code blocks...');
+
+  // Re-highlight all COBOL, REXX, PL/I, and HLASM code blocks
+  document.querySelectorAll('code.language-cobol, code.language-rexx, code.language-pli, code.language-hlasm').forEach(function(block) {
+    hljs.highlightElement(block);
+    console.log('Highlighted:', block.className);
+  });
+});
+
+// Accumulating Snow Animation - CLEAN REWRITE
+const canvas = document.getElementById('snowCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const allSnowflakes = [];
+const MAX_SNOW_HEIGHT = 150;
+const BOTTOM_BAR_HEIGHT = 75; // Height of the bottom attribution bar
+const MAX_SNOWFLAKES = 3000; // Increased limit for longer presentations
+
+// Target red color #a2191a (Mainframe Society red)
+const TARGET_RED = { r: 162, g: 25, b: 26 };
+const COLOR_TOLERANCE = 30;
+
+// PERFORMANCE: Cache red box rectangles instead of using getImageData()
+let cachedRedBoxes = [];
+
+// Detection canvas - renders ONLY red text
+const detectCanvas = document.createElement('canvas');
+const detectCtx = detectCanvas.getContext('2d'); // No longer need willReadFrequently hint
+detectCanvas.width = canvas.width;
+detectCanvas.height = canvas.height;
+
+// Debug overlay (press 'd' to toggle)
+const debugCanvas = document.getElementById('debugCanvas');
+const debugCtx = debugCanvas.getContext('2d');
+debugCanvas.width = canvas.width;
+debugCanvas.height = canvas.height;
+let debugMode = false;
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'd' || e.key === 'D') {
+    debugMode = !debugMode;
+    debugCanvas.style.display = debugMode ? 'block' : 'none';
+  }
+});
+
+// Update detection canvas with current red text
+function updateDetectionCanvas() {
+  detectCtx.clearRect(0, 0, detectCanvas.width, detectCanvas.height);
+
+  if (debugMode) {
+    debugCtx.clearRect(0, 0, debugCanvas.width, debugCanvas.height);
+  }
+
+  // PERFORMANCE: Clear the cached red boxes array
+  cachedRedBoxes = [];
+
+  const presentSlide = document.querySelector('.reveal .slides section.present');
+  if (!presentSlide) return;
+
+  const slideOpacity = parseFloat(window.getComputedStyle(presentSlide).opacity);
+  if (slideOpacity < 0.3) {
+    // Slide is fading - don't render red text
+    return;
+  }
+
+  const redElements = presentSlide.querySelectorAll('h1, h2, h3');
+
+  redElements.forEach(el => {
+    const elStyle = window.getComputedStyle(el);
+    if (elStyle.visibility === 'hidden' || parseFloat(elStyle.opacity) < 0.1) return;
+
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+
+    // PERFORMANCE: Cache this red box for fast collision checking
+    cachedRedBoxes.push({
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height
+    });
+
+    // SIMPLE: Just render the entire red background box as a solid rectangle
+    detectCtx.fillStyle = '#a2191a';
+    detectCtx.fillRect(rect.left, rect.top, rect.width, rect.height);
+
+    if (debugMode) {
+      debugCtx.fillStyle = '#a2191a';
+      debugCtx.fillRect(rect.left, rect.top, rect.width, rect.height);
+
+      // Draw border for visibility
+      debugCtx.strokeStyle = '#00ff00';
+      debugCtx.lineWidth = 2;
+      debugCtx.strokeRect(rect.left, rect.top, rect.width, rect.height);
+    }
+  });
+}
+
+// PERFORMANCE: Check if point is inside any cached red box (MUCH faster than getImageData)
+function isRedAt(x, y) {
+  // Quick bounds check
+  if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) {
+    return false;
+  }
+
+  // Check against cached red boxes (simple rectangle intersection)
+  for (let box of cachedRedBoxes) {
+    if (x >= box.left && x <= box.right && y >= box.top && y <= box.bottom) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// Slide transition handling
+Reveal.on('slidechanged', () => {
+  const slides = document.querySelector('.reveal .slides');
+  slides.style.opacity = '0';
+
+  // PERFORMANCE: Clear detection canvas and cached red boxes
+  detectCtx.clearRect(0, 0, detectCanvas.width, detectCanvas.height);
+  cachedRedBoxes = [];
+  if (debugMode) {
+    debugCtx.clearRect(0, 0, debugCanvas.width, debugCanvas.height);
+  }
+
+  // Free ALL snow that's NOT part of the bottom pile
+  // Only snow in the bottom accumulation should stay stuck
+  const groundLevel = canvas.height - BOTTOM_BAR_HEIGHT;
+  const bottomThreshold = groundLevel - MAX_SNOW_HEIGHT - 20; // Snow within 170px of ground stays stuck
+
+  for (let snowflake of allSnowflakes) {
+    if (snowflake.stuck) {
+      const snowBottom = snowflake.y + snowflake.radius;
+
+      // If snow is NOT in the bottom pile, make it fall
+      if (snowBottom < bottomThreshold) {
+        snowflake.stuck = false;
+        snowflake.wasFreedFromBox = true; // Mark it so it won't stick to red boxes again
+
+        // Reset motion: fall straight down like a cascade
+        snowflake.speed = Math.random() * 2 + 1.5; // Fast straight drop: 1.5-3.5 px/frame
+        snowflake.drift = Math.random() * 0.2 - 0.1; // Minimal drift: mostly vertical
+      }
+    }
+  }
+
+  setTimeout(() => {
+    updateDetectionCanvas();
+    slides.style.opacity = '1';
+  }, 600);
+});
+
+class Snowflake {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = -10;
+    this.radius = Math.random() * 2.5 + 2; // Bigger: 2-4.5px radius
+    this.speed = Math.random() * 1.5 + 0.8; // Faster: 0.8-2.3 px/frame
+    this.drift = Math.random() * 0.6 - 0.3; // More drift
+    this.opacity = Math.random() * 0.5 + 0.5; // More visible: 0.5-1.0
+    this.stuck = false;
+    this.wasFreedFromBox = false; // Track if this snow fell from a red box
+    this.rotation = Math.random() * Math.PI * 2; // Random initial rotation
+    this.rotationSpeed = (Math.random() - 0.5) * 0.03; // Slow spin
+  }
+
+  // SIMPLE: Check if bottom of snowflake touches ANYTHING
+  isOnSupport() {
+    const bottomY = Math.floor(this.y + this.radius);
+
+    // At bottom bar? Snow should land ON TOP of the bottom bar
+    const groundLevel = canvas.height - BOTTOM_BAR_HEIGHT;
+    if (bottomY >= groundLevel) {
+      return true;
+    }
+
+    // If this snow was freed from a box, it should ONLY stick to bottom pile
+    // It should NOT stick to new red boxes
+    if (!this.wasFreedFromBox) {
+      // Fresh falling snow CAN stick to red boxes
+      const checkPoints = [
+        Math.floor(this.x - this.radius),
+        Math.floor(this.x),
+        Math.floor(this.x + this.radius)
+      ];
+
+      for (let checkX of checkPoints) {
+        // Check at the bottom edge
+        if (isRedAt(checkX, bottomY)) return true;
+      }
+    }
+
+    // Check if on top of other stuck snow (all snow can do this)
+    for (let other of allSnowflakes) {
+      if (other === this || !other.stuck) continue;
+
+      const dx = this.x - other.x;
+      const dy = this.y - other.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // Touching and other is below us?
+      if (dist <= this.radius + other.radius && other.y > this.y) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  update() {
+    // Stuck snow: only check support occasionally (PERFORMANCE)
+    if (this.stuck) {
+      if (Math.random() < 0.05 || this.needsCheck) {
+        if (!this.isOnSupport()) {
+          this.stuck = false;
+        }
+        this.needsCheck = false;
+      }
+
+      // PHYSICS: Make stuck snow slide sideways if unstable (prevents pillars)
+      // Check if we have support on sides - if not, slide down
+      if (Math.random() < 0.3) { // Check 30% of frames
+        const leftSupport = this.isOnSupport(); // Current position
+
+        // Test slightly to the left
+        const origX = this.x;
+        this.x -= 1;
+        const canMoveLeft = !this.isOnSupport();
+        this.x = origX;
+
+        // Test slightly to the right
+        this.x += 1;
+        const canMoveRight = !this.isOnSupport();
+        this.x = origX;
+
+        // If we can slide to one side, do it (gravity pulls snow down and sideways)
+        if (canMoveLeft || canMoveRight) {
+          if (canMoveLeft && canMoveRight) {
+            // Both sides possible - pick randomly
+            this.x += Math.random() < 0.5 ? -0.5 : 0.5;
+          } else if (canMoveLeft) {
+            this.x -= 0.5;
+          } else {
+            this.x += 0.5;
+          }
+          // Also drop down slightly
+          this.y += 0.3;
+        }
+      }
+
+      return;
+    }
+
+    // Falling snow: Move pixel by pixel in Y direction to NEVER miss collision
+    const targetX = this.x + this.drift;
+    const targetY = this.y + this.speed;
+
+    // Move horizontally all at once (no collision)
+    this.x = targetX;
+    if (this.x < 0) this.x = canvas.width;
+    if (this.x > canvas.width) this.x = 0;
+
+    // Move vertically in small steps, checking after EACH step
+    const ySteps = Math.max(3, Math.ceil(this.speed * 3)); // More steps for faster snow
+    const yStep = this.speed / ySteps;
+
+    for (let i = 0; i < ySteps; i++) {
+      this.y += yStep;
+
+      if (this.isOnSupport()) {
+        this.stuck = true;
+        return;
+      }
+    }
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+
+    ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+    ctx.lineWidth = 1;
+
+    // Draw 6 arms of the snowflake
+    for (let i = 0; i < 6; i++) {
+      ctx.rotate(Math.PI / 3);
+
+      // Main arm
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, -this.radius);
+      ctx.stroke();
+
+      // Side branches
+      ctx.beginPath();
+      ctx.moveTo(0, -this.radius * 0.4);
+      ctx.lineTo(-this.radius * 0.3, -this.radius * 0.6);
+      ctx.moveTo(0, -this.radius * 0.4);
+      ctx.lineTo(this.radius * 0.3, -this.radius * 0.6);
+      ctx.stroke();
+    }
+
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(0, 0, this.radius * 0.15, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+
+    // Update rotation if falling (not stuck)
+    if (!this.stuck) {
+      this.rotation += this.rotationSpeed;
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Add new snowflakes continuously (no time limit)
+  if (allSnowflakes.length < MAX_SNOWFLAKES) {
+    if (Math.random() < 0.5) { // More frequent spawning
+      allSnowflakes.push(new Snowflake());
+    }
+  }
+
+  // Update and draw all snowflakes
+  for (let snowflake of allSnowflakes) {
+    // Performance optimization: skip updating snowflakes that are permanently stuck at bottom
+    const groundLevel = canvas.height - BOTTOM_BAR_HEIGHT;
+    const isAtBottom = (snowflake.y + snowflake.radius) >= (groundLevel - 10);
+
+    if (!snowflake.stuck || !isAtBottom) {
+      // Update falling snowflakes, or stuck snowflakes that might need to fall
+      snowflake.update();
+    }
+
+    snowflake.draw();
+  }
+
+  requestAnimationFrame(animate);
+}
+
+// Update detection canvas very frequently to catch transitions
+setInterval(updateDetectionCanvas, 16); // ~60fps
+
+// Initialize
+Reveal.on('ready', () => {
+  setTimeout(updateDetectionCanvas, 300);
+});
+
+setTimeout(updateDetectionCanvas, 500);
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  detectCanvas.width = canvas.width;
+  detectCanvas.height = canvas.height;
+  debugCanvas.width = canvas.width;
+  debugCanvas.height = canvas.height;
+  updateDetectionCanvas();
+});
+
+animate();
+</script>
+</body>
+</html>
