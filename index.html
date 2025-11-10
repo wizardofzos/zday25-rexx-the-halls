@@ -144,7 +144,7 @@ print("Santa is at floor: {}".format(floor))</code></pre>
     <li class="fragment">Solve the challenges in z/OS languages like REXX, COBOL, PL/I, or JCL</li>
     <li class="fragment">Learn a new language, or polish up your skills</a></li>
     <li class="fragment">Friendly competition, fame and swag</li>
-    <li class="fragment">This will be our 10th year </li>
+    <li class="fragment">This will be our 6th year </li>
 
   </ul>
 </section>
@@ -306,9 +306,10 @@ BUF      DS    CL10
   <p class="fragment">Many organisations sponsor this event.</p>
   <ul>
     <li class="fragment">Win a Mainframe Society 'seeva'-pluche toy</li>
-    <li class="fragment">An Interskill learning seat</li>
-    <li class="fragment">See them all on the <a href="https://mfaoc.mainframe.community/sponsors/public">sponsor overview page</a></li>
+    <li class="fragment">We've asked all the vendors at GSUK last week</li>
     <li class="fragment">...you can still sponsor this epic event!</li>
+    <li class="fragment">See the current sponsors on the <a href="https://mfaoc.mainframe.community/sponsors/public">sponsor overview page</a></li>
+
   </ul>
 </section>
 
@@ -325,14 +326,12 @@ BUF      DS    CL10
 </section>
 
 <section>
-  <h2>The 'Rosetta Stone' Effect</h2>
-  <p class="fragment">One puzzle. Many languages. Infinite insights.</p>
-  <ul>
-    <li class="fragment">Solve the same challenge in multiple languages</li>
-    <li class="fragment">Understand each language's strengths and quirks</li>
-    <li class="fragment">Discover how COBOL thinks vs. REXX vs. JCL</li>
-    <li class="fragment">Deep learning through comparison</li>
-  </ul>
+  <h2>BREAKING NEWS!!!</h2>
+  <img class='fragment' src="Velocity.jpg" alt="Velocity Software" style="width: 85%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+
+        <p class="fragment">🥰Have donated a z/OS image🥰</p>
+        <p class="fragment">🎉🎉🎉🎉🎉🎉</p>
+
 </section>
 
 <section>
@@ -362,12 +361,12 @@ BUF      DS    CL10
 
 <section>
   <h2>Join the Festivities 🎄</h2>
-  <p class="fragment">Sign up today at: <a href="https://mfaoc.mainframe.community">mfaoc.mainframe.community</a></p>
+  <p class="fragment">Sign up and join the fun!<br /><a href="https://mfaoc.mainframe.community">mfaoc.mainframe.community</a></p>
   <ul>
-    <li class="fragment">Participate in the December coding fun</li>
     <li class="fragment">Share your progress online with:<br><code>#MFAOC #AdventOfCode #REXXTheHalls</code></li>
-    <li class="fragment">Tag <code>@Mmainframe Society</code> in your LinkedIN posts</li>
+    <li class="fragment">Tag <code>@Mainframe Society</code> on LinkedIN posts!</li>
     <li class="fragment">Bring your friends, your team, and your coding skills!</li>
+    <li class="fragment">Eggnog or other beverages optional 🍹🍻🥳</li>
   </ul>
 </section>
 
@@ -378,6 +377,7 @@ BUF      DS    CL10
   <a href='https://www.linkedin.com/in/wizardofzos/'>https://www.linkedin.com/in/wizardofzos</a><br>
   <a href='mailto:henri@mainframesociety.com'>henri@mainframesociety.com</a><br>
   <code>#REXXTheHalls #MFAOC</code></p>
+  <a href='https://mainframesociety.com'>mainframesociety.com</a><br>
 </section>
 
 <section>
@@ -668,7 +668,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const allSnowflakes = [];
+let allSnowflakes = [];
 const MAX_SNOW_HEIGHT = 150;
 const BOTTOM_BAR_HEIGHT = 75; // Height of the bottom attribution bar
 const MAX_SNOWFLAKES = 3000; // Increased limit for longer presentations
@@ -697,6 +697,13 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'd' || e.key === 'D') {
     debugMode = !debugMode;
     debugCanvas.style.display = debugMode ? 'block' : 'none';
+  }
+  if (e.key === 's' || e.key === 'S') {
+    // Manually trigger Santa sweep
+    if (!santa.active) {
+      console.log('Manual Santa sweep triggered!');
+      santa.start();
+    }
   }
 });
 
@@ -905,7 +912,7 @@ class Snowflake {
             this.x += 0.5;
           }
           // Also drop down slightly
-          this.y += 0.3;
+          this.y += 0.6; //HERE CHANGE
         }
       }
 
@@ -977,21 +984,106 @@ class Snowflake {
   }
 }
 
+// Santa class for cleaning snow
+class Santa {
+  constructor() {
+    this.width = 80;
+    this.height = 60;
+    this.x = -this.width; // Start off-screen left
+    this.y = canvas.height - BOTTOM_BAR_HEIGHT - this.height - 5; // Just above bottom bar
+    this.speed = 15; // Pixels per frame
+    this.active = false;
+  }
+
+  start() {
+    this.x = -this.width;
+    this.active = true;
+  }
+
+  update() {
+    if (!this.active) return;
+
+    this.x += this.speed;
+
+    // Check if Santa has crossed the entire screen
+    if (this.x > canvas.width) {
+      this.active = false;
+      this.x = -this.width; // Reset position
+    }
+
+    // Wipe away snow that Santa touches - ACTUALLY REMOVE IT
+    const groundLevel = canvas.height - BOTTOM_BAR_HEIGHT;
+
+    allSnowflakes = allSnowflakes.filter(snowflake => {
+      // Check if snowflake is in Santa's path
+      const inSantaPath = snowflake.stuck &&
+                          snowflake.x >= this.x - 10 &&
+                          snowflake.x <= this.x + this.width + 10 &&
+                          snowflake.y >= this.y;
+
+      // Return false to remove, true to keep
+      return !inSantaPath;
+    });
+  }
+
+  draw() {
+    if (!this.active) return;
+
+    ctx.save();
+
+    // Draw a bigger Santa emoji/character
+    ctx.font = `${this.height}px Arial`;
+    ctx.fillText('🎅', this.x, this.y + this.height);
+
+    ctx.restore();
+  }
+}
+
+let santa = new Santa();
+
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Add new snowflakes continuously (no time limit)
   if (allSnowflakes.length < MAX_SNOWFLAKES) {
-    if (Math.random() < 0.5) { // More frequent spawning
+    if (Math.random() < 0.9) { // More frequent spawning
       allSnowflakes.push(new Snowflake());
     }
   }
+
+  // Monitor snow height and trigger Santa if needed
+  if (!santa.active) {
+    const groundLevel = canvas.height - BOTTOM_BAR_HEIGHT;
+    let maxSnowHeight = 0;
+
+    // Find the highest snow point at the bottom
+    for (let snowflake of allSnowflakes) {
+      if (snowflake.stuck) {
+        const snowBottom = snowflake.y + snowflake.radius;
+        if (snowBottom >= groundLevel - MAX_SNOW_HEIGHT) {
+          const heightFromGround = groundLevel - (snowflake.y - snowflake.radius);
+          if (heightFromGround > maxSnowHeight) {
+            maxSnowHeight = heightFromGround;
+          }
+        }
+      }
+    }
+
+    // Trigger Santa when snow gets too high (100-120px)
+    if (maxSnowHeight > 100) {
+      console.log('Snow too high! Sending Santa... Height:', maxSnowHeight);
+      santa.start();
+    }
+  }
+
+  // Update Santa
+  santa.update();
 
   // Update and draw all snowflakes
   for (let snowflake of allSnowflakes) {
     // Performance optimization: skip updating snowflakes that are permanently stuck at bottom
     const groundLevel = canvas.height - BOTTOM_BAR_HEIGHT;
-    const isAtBottom = (snowflake.y + snowflake.radius) >= (groundLevel - 10);
+    const isAtBottom = (snowflake.y + snowflake.radius) >= (groundLevel - 5);
 
     if (!snowflake.stuck || !isAtBottom) {
       // Update falling snowflakes, or stuck snowflakes that might need to fall
@@ -1000,6 +1092,14 @@ function animate() {
 
     snowflake.draw();
   }
+
+  // Remove snowflakes that have fallen below the canvas (swept by Santa)
+  allSnowflakes = allSnowflakes.filter(snowflake => {
+    return snowflake.y < canvas.height + 50; // Give some margin
+  });
+
+  // Draw Santa on top of snow
+  santa.draw();
 
   requestAnimationFrame(animate);
 }
