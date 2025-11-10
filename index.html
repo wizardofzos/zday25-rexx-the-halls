@@ -672,6 +672,7 @@ let allSnowflakes = [];
 const MAX_SNOW_HEIGHT = 150;
 const BOTTOM_BAR_HEIGHT = 75; // Height of the bottom attribution bar
 const MAX_SNOWFLAKES = 3000; // Increased limit for longer presentations
+let snowSpawnRate = 0.9; // Probability of spawning snow each frame (0-1)
 
 // Target red color #a2191a (Mainframe Society red)
 const TARGET_RED = { r: 162, g: 25, b: 26 };
@@ -704,6 +705,16 @@ window.addEventListener('keydown', (e) => {
       console.log('Manual Santa sweep triggered!');
       santa.start();
     }
+  }
+  if (e.key === 'm' || e.key === 'M') {
+    // More snow - increase spawn rate
+    snowSpawnRate = Math.min(1.0, snowSpawnRate + 0.1);
+    console.log('Snow spawn rate increased to:', snowSpawnRate.toFixed(2));
+  }
+  if (e.key === 'l' || e.key === 'L') {
+    // Less snow - decrease spawn rate
+    snowSpawnRate = Math.max(0.0, snowSpawnRate - 0.1);
+    console.log('Snow spawn rate decreased to:', snowSpawnRate.toFixed(2));
   }
 });
 
@@ -1046,7 +1057,7 @@ function animate() {
 
   // Add new snowflakes continuously (no time limit)
   if (allSnowflakes.length < MAX_SNOWFLAKES) {
-    if (Math.random() < 0.9) { // More frequent spawning
+    if (Math.random() < snowSpawnRate) { // Spawn rate controlled by 'm' and 'l' keys
       allSnowflakes.push(new Snowflake());
     }
   }
