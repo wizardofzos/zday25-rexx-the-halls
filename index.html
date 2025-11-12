@@ -716,12 +716,12 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.key === 'x' || e.key === 'X') {
     // More snow - increase spawn rate
-    snowSpawnRate = Math.min(1.0, snowSpawnRate + 0.1);
+    snowSpawnRate = Math.min(1.0, snowSpawnRate + 0.01);
     console.log('Snow spawn rate increased to:', snowSpawnRate.toFixed(2));
   }
   if (e.key === 'z' || e.key === 'Z') {
     // Less snow - decrease spawn rate
-    snowSpawnRate = Math.max(0.0, snowSpawnRate - 0.1);
+    snowSpawnRate = Math.max(0.0, snowSpawnRate - 0.01);
     console.log('Snow spawn rate decreased to:', snowSpawnRate.toFixed(2));
   }
 });
